@@ -1,3 +1,7 @@
+require("dotenv").config();
 const app = require('./app')
-
-app.listen(process.env.PORT || 5000, () => console.log("It's running birch!"))
+const port = process.env.PORT || 5000 
+const database = require('./database/mongodb')
+database.connect().then( () => 
+    app.listen( port, () => console.log("Server running on port " + port + ";"))
+)
