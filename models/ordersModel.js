@@ -26,8 +26,22 @@ module.exports = {
         
         return new Promise(async(resolve, reject) => {
             try {
+                
                 const order = await ordersModel.findOne({_id: orderId})
+               
                 resolve(order)
+            } catch (error) {
+                reject(error)
+            }
+        }) 
+    },
+    findAllOrders:  () => {
+        
+        return new Promise(async(resolve, reject) => {
+            try {
+                const orders = await ordersModel.find()
+                
+                resolve(orders)
             } catch (error) {
                 reject(error)
             }
@@ -55,7 +69,19 @@ module.exports = {
     deleteOrder: (orderId) => {
         return new Promise(async(resolve, reject) => {
             try {
+                
                 await ordersModel.deleteOne({_id: orderId})
+                
+                resolve('Deleted')
+            } catch (error) {
+                reject(error)
+            }
+        })
+    },
+    clearAllOrders: () => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                await ordersModel.deleteMany({})
                 resolve('Deleted')
             } catch (error) {
                 reject(error)

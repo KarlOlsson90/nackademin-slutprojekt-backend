@@ -7,7 +7,7 @@ const ordersModel = require('../models/ordersModel')
 describe('It should test if the CRUD:iing functionality of orderModel works as intended', () => {
     beforeEach(async function () {
         await db.connect()
-
+        await ordersModel.clearAllOrders()
         const customerId = '12345'
         const items = [
             {
@@ -50,10 +50,17 @@ describe('It should test if the CRUD:iing functionality of orderModel works as i
         expect(order.value).to.equal(999)
     })
 
+    it('should read all orders', async function() {
+
+        const orders = await ordersModel.findAllOrders()
+
+        expect(orders.length).to.equal(1)
+    })
+
     it('should update an order', async function () {
 
         const orderId = this.test.order._id
-        const item2add = {
+        const item2Add = {
             _id: '30y7gbbZk1u4ABnv',
             title: 'Gretas Fury 2',
             price: 1099,
@@ -63,7 +70,7 @@ describe('It should test if the CRUD:iing functionality of orderModel works as i
         }
 
         const order = await ordersModel.findOrder(orderId)
-        order.items.push(item2add)
+        order.items.push(item2Add)
 
         var value = 0
         for(const item in order.items) {
