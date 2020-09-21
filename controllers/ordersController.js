@@ -15,6 +15,7 @@ module.exports = {
         }
         try {
             const addedOrder = await ordersModel.addOrder(order)
+           
             res.json(addedOrder)
         } catch (error) {
             res.json(error)
