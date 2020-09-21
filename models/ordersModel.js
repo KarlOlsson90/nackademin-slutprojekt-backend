@@ -12,15 +12,7 @@ order.set('timestamps', true)
 const ordersModel = mongoose.model('orders', order)
 
 module.exports = {
-    addOrder:  (customerId, items = [], value) => {
-        const status = 'inProcess'
-
-        const order = {
-            customerId: customerId,
-            status: status,
-            items: items,
-            value: value
-        }
+    addOrder:  (order) => {
         return new Promise(async(resolve, reject) => {
             try {
                 const insert = await ordersModel.create(order)

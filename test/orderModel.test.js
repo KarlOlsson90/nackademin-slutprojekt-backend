@@ -23,8 +23,13 @@ describe('It should test if the CRUD:iing functionality of orderModel works as i
         for(const item in items) {
             value += items[item].price
         }
-
-        const order = await ordersModel.addOrder(customerId, items, value)
+        const customerOrder = {
+            customerId: customerId,
+            status: 'inProcess',
+            items: items,
+            value: value
+        }
+        const order = await ordersModel.addOrder(customerOrder)
 
         this.currentTest.order = order
     })
