@@ -1,17 +1,19 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const productSchema = new mongoose.Schema({
+const productSchema = new mongoose.Schema(
+  {
     title: String,
     price: Number,
     shortDesc: String,
     longDesc: String,
-    imgFile: String
-});
+    imgFile: String,
+  },
+  { timestamps: true, versionKey: false }
+);
 
-const Product = mongoose.model('product', productSchema);
+const Product = mongoose.model("product", productSchema);
 
 module.exports = Product;
-
 
 /* 
 /api/products/	GET	Returnerar en lista på samtliga produkter.
@@ -22,7 +24,7 @@ module.exports = Product;
 */
 
 module.exports = {
-    all: async () => {
-        
-    }
-}
+  createProduct: async (product) => {
+    return await Product.create(product);
+  },
+};
