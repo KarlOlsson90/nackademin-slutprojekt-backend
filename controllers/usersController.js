@@ -39,11 +39,36 @@ async function deleteUserController(req, res){
     }
 
 }
+async function createUserController(req, res){
+    try {
+        const body = {email: req.body.email, password: req.body.password}
+        var result = await model.createUserModel(body)
+        return res.status(201).json(result);
+    } catch(error) {
+        return res.status(400).json(error);
+    }
+
+}
+async function loginUserController(req, res){
+
+    try {
+
+        const body = {email: req.body.email, password: req.body.password}
+
+        const token = await model.loginUserModel(body);
+
+        return res.status(200).json(token);
+      } catch (error) {
+        return res.status(400).json(error);
+      }
+}
 
 module.exports = {
     getAllUsersController,
     getSingleUserController,
     editUserController,
-    deleteUserController
+    deleteUserController,
+    loginUserController,
+    createUserController
 
 }

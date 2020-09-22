@@ -13,10 +13,14 @@ const usersSchema = new mongoose.Schema({
     orderHistory: Array
 })
 
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
 const usersDB = mongoose.model("users", usersSchema)
 
 async function createUserModel(body){
-
+    body['password'] = bcrypt.hashSync(body.password, 10)
+    body['role'] = "user"
     const result = await usersDB.create(body)
     return result;
 }
@@ -40,6 +44,28 @@ async function editUserModel(id, body){
     const result = await usersDB.updateOne({_id: id}, body)
     return result;
 }
+async function loginUserModel(body){
+    const user = await usersDB.findOne({email: body.email});
+    if (user){
+        if (comparePass(body, user)) {
+
+            const token = jwt.sign({email: body.email, role: user.role, userId: user._id}, process.env.SECRET, {expiresIn: 10000000,})
+
+            return token
+        }
+    }
+}
+async function verifyTokenModel(token, secret){
+    const validatedToken = jwt.verify(token, secret)
+    return validatedToken;
+}
+function comparePass(body, user){
+
+    const tryPassword = bcrypt.compareSync(body.password, user.password)
+
+    return tryPassword
+}
+
 
 
 module.exports = {
@@ -47,5 +73,7 @@ module.exports = {
     getAllUsersModel,
     getSingleUserModel,
     deleteUserModel,
-    editUserModel
+    editUserModel,
+    loginUserModel,
+    verifyTokenModel
 }

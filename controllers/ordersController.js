@@ -1,4 +1,3 @@
-const { add } = require('../../nackademin-todo-app/Model/toDo')
 const ordersModel = require('../models/ordersModel')
 
 module.exports = {
