@@ -21,15 +21,15 @@ module.exports = {
         }
     },
     admin: (req, res, next) => {
-        if (!req.headers.token) {
+        if (!req.headers.authorization) {
 
             return res.sendStatus(401)
         }
 
-        const token = req.headers.token.replace('Bearer ', '');
+        const token = req.headers.authorization.replace('Bearer ', '');
 
         try {
-            const payload = jwt.verify(token, secret)
+            const payload = jwt.verify(token,  process.env.SECRET)
      
             if (payload.role != 'admin') {
                 return res.sendStatus(401)
