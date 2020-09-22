@@ -20,7 +20,7 @@ describe('User resource', async function() {
 
     it('User should be created in database', async function() {
 
-        var createdUser = await model.createUserModel({})
+        var createdUser = await model.createUserModel({email: "testMail", password: "testPass"})
         expect(createdUser._id).to.exist
 
         var check2 = await usersDB.findOne({_id: createdUser._id})
@@ -34,16 +34,28 @@ describe('User resource', async function() {
             email: "testMail", 
             password: "testPass", 
             name: "testName", 
-            role: "testRole", 
             adress:{}
         }
         var result = await model.createUserModel(testBody)
 
         expect(result.email).to.equal("testMail")
-        expect(result.password).to.equal("testPass")
         expect(result.name).to.equal("testName")
-        expect(result.role).to.equal("testRole")
+        expect(result.role).to.equal("user")
         expect(typeof result.adress).to.equal("object")
+
+    });
+    it('Created user password should be hashed', async function() {
+        var testBody = {
+            email: "testMail", 
+            password: "testPass", 
+            name: "testName", 
+            role: "testRole", 
+            adress:{}
+        }
+        var result = await model.createUserModel(testBody)
+
+        expect(result.password.length).to.equal(60)
+
 
     });
     it('All users should be found', async function() {
