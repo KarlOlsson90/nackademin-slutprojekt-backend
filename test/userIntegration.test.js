@@ -128,7 +128,10 @@ describe('User resource', async function () {
                 expect(res.body).to.haveOwnProperty("token")
                 expect(res.body).to.haveOwnProperty("user")
                 var decodedToken = decode(res.body.token)
-                //expect(decodedToken.userId.tostring()).to.equal({_id: createdUser._id})
+
+                //Här:
+                expect(decodedToken.userId).to.equal(createdUser._id.toString())
+
                 expect(decodedToken.userRole).to.equal('user')
                 expect(decodedToken.password).to.not.exist
                 })
