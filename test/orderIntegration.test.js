@@ -2,15 +2,19 @@ var chai = require('chai'),
 chaiHttp = require('chai-http')
 chai.use(chaiHttp)
 const { expect } = chai
+
 const app = require('../app')
 const db = require('../database/mongodb')
-
+const mongoose = require('mongoose')
+const usersDB = mongoose.model("users")
 const ordersModel = require('../models/ordersModel')
+const usersModel = require('../models/usersModel')
 
 describe('This test is used to see if integration of route, controller and model is correct', () => {
     beforeEach(async function () {
         await db.connect()
         await ordersModel.clearAllOrders()
+        await usersDB.deleteMany({})
         const customerId = '12345'
         const items = [
             {
@@ -35,6 +39,23 @@ describe('This test is used to see if integration of route, controller and model
         const order = await ordersModel.addOrder(customerOrder)
 
         this.currentTest.order = order
+
+        const user = {
+            email: '123',
+            name: '123',
+            password: '123',
+            adress: {
+                street: '123',
+                zip: '123',
+                city: '123'
+            },
+            orderHistory: []
+        }
+
+        this.currentTest.user = await usersModel.createUserModel(user)
+        
+        this.currentTest.token = await usersModel.loginUserModel({email: '123', password: '123'})
+
     })
 
     it('should add an order', async function () {
@@ -105,8 +126,8 @@ describe('This test is used to see if integration of route, controller and model
     })
     // ändra den nedan till att ge alla ifalll man e  admin o alla sina egna om man e kund =D
     it('should read all orders', async function () {
-
-        const customerId = '15511'
+        
+        const customerId = this.test.user._id
         const items = [
             {
                 _id: '32y7gbbZk1u4ABnv',
@@ -132,10 +153,11 @@ describe('This test is used to see if integration of route, controller and model
         await chai.request(app)
         .get(`/orders`)
         .set('Content-Type', 'application/json')
+        .set('authorization', this.test.token)
         .then((res) => {
-
-            expect(res.body.length).to.equal(2)
-            expect(res.body[0].value).to.equal(999)
+            console.log(res.body)
+            expect(res.body.length).to.equal(1)
+            expect(res.body[0].value).to.equal(1000)
         })
 
     })

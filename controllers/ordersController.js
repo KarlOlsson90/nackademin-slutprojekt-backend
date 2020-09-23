@@ -43,9 +43,15 @@ module.exports = {
         }
     },
     findAllOrders: async (req, res) => {
-        
+        console.log(req.user)
         try {
-            const orders = await ordersModel.findAllOrders()
+            var orders
+            if (req.user.role == 'user') {
+                orders = await ordersModel.findAllOrders(req.user.userId)
+            } else if (req.user.role == 'admin') {
+                orders = await ordersModel.findAllOrders('admin')
+            }
+            
             res.json(orders)
         } catch (error) {
             res.json(error)

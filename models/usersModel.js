@@ -60,9 +60,13 @@ async function verifyTokenModel(token, secret){
     return validatedToken;
 }
 function comparePass(body, user){
-
+    
     const tryPassword = bcrypt.compareSync(body.password, user.password)
-
+    if(!tryPassword) {
+        console.log(tryPassword)
+        console.log(body.password + " " + user.password)
+    }
+    
     return tryPassword
 }
 

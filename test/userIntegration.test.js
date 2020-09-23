@@ -109,7 +109,7 @@ describe('User resource', async function () {
                 expect(res.status).to.equal(200)
 
                 var decodedToken = decode(res.body)
-
+                
                 expect(decodedToken['email']).to.equal('testUsern')
                 expect(decodedToken['role']).to.equal('user')
                 expect(decodedToken['userId']).to.equal(createdUser._id.toString())

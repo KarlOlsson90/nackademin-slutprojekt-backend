@@ -35,15 +35,16 @@ module.exports = {
             }
         }) 
     },
-    findAllOrders:  (guestId) => {
+    findAllOrders:  (id) => {
         
+        console.log(id)
         return new Promise(async(resolve, reject) => {
             try {
                 var orders
-                if (req.user.role == 'user') {
-                    orders = await ordersModel.find({customerId: req.user._id})
-                } else if (req.user.role == 'admin') {
+                if (id == 'admin') {
                     orders = await ordersModel.find()
+                } else {
+                    orders = await ordersModel.find({customerId: id})
                 }
                 
                 resolve(orders)
