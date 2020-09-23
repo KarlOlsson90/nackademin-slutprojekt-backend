@@ -2,12 +2,24 @@ const ordersModel = require('../models/ordersModel')
 
 module.exports = {
     addOrder: async (req, res) => {
-        var order = {
-            customerId: req.body.customerId,
-            status: 'inProcess',
-            items: req.body.items,
-            value: 0
+
+        var order
+        if(req.user) {
+            order = {
+                customerId: req.user._id,
+                status: 'inProcess',
+                items: req.body.items,
+                value: 0
+            }
+        } else {
+            order = {
+                customerId: req.body.customerId,
+                status: 'inProcess',
+                items: req.body.items,
+                value: 0
+            }
         }
+        
 
         for(const item in order.items) {
             order.value += order.items[item].price
