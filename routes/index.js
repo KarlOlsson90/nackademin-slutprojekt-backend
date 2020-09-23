@@ -3,10 +3,10 @@ const router = require('express').Router()
 
 
 const ordersRoute = require('./ordersRoutes')
-router.use('/orders', ordersRoute)
+router.use('/api/orders', ordersRoute)
 
 const usersRoute = require('./usersRoutes')
-router.use('/users', usersRoute)
+router.use('/api/users', usersRoute)
 
 const loginRegisterRoute = require('./loginRegisterRoutes')
 router.use('/api/', loginRegisterRoute)

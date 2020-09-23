@@ -1,3 +1,4 @@
+
 var chai = require('chai')
 const { expect } = chai
 const db = require('../database/mongodb')
@@ -24,8 +25,9 @@ describe('It should test if the CRUD:iing functionality of orderModel works as i
         }
 
         this.currentTest.user = await usersModel.createUserModel(user)
-        
-        this.currentTest.token = await usersModel.loginUserModel({email: '123', password: '123'})
+
+        const loginresponse = await usersModel.loginUserModel({email: '123', password: '123'})
+        this.currentTest.token = loginresponse.token
 
         const customerId = this.currentTest.user._id
         const items = [
@@ -70,7 +72,7 @@ describe('It should test if the CRUD:iing functionality of orderModel works as i
     })
 
     it('should read all orders', async function() {
-
+        
         let roleId = this.test.user._id
         const customerId = '12345'
         const items = [

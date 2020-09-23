@@ -46,12 +46,12 @@ async function editUserModel(id, body){
 }
 async function loginUserModel(body){
     const user = await usersDB.findOne({email: body.email});
+
     if (user){
         if (comparePass(body, user)) {
-            console.log(user)
-            const token = jwt.sign({
-                token: "TJOSSAN",
-                user: {
+
+            const token = jwt.sign({userId: user._id, userRole: user.role}, process.env.SECRET, {expiresIn: 10000000,})
+            const userObject = {
                   email: user.email,
                   name: user.name,
                   role: user.role,
@@ -61,11 +61,13 @@ async function loginUserModel(body){
                     city: user.adress.city
                   }
                 }
-              }, process.env.SECRET, {expiresIn: 10000000,})
+    
             
-            return token
+            return {token: token, user: userObject}
         }
+    
     }
+
 }
 async function verifyTokenModel(token, secret){
     const validatedToken = jwt.verify(token, secret)
@@ -75,7 +77,6 @@ function comparePass(body, user){
     
     const tryPassword = bcrypt.compareSync(body.password, user.password)
     if(!tryPassword) {
-        console.log(tryPassword)
         console.log(body.password + " " + user.password)
     }
     

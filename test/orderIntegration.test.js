@@ -78,7 +78,7 @@ describe('This test is used to see if integration of route, controller and model
             } 
         ]
         chai.request(app)
-        .post(`/orders`)
+        .post(`/api/orders`)
         .set('Content-Type', 'application/json')
         .send({
             customerId: 'Guest12345',
@@ -95,7 +95,7 @@ describe('This test is used to see if integration of route, controller and model
         let orderId = this.test.order._id
 
         await chai.request(app)
-        .get(`/orders/${orderId}`)
+        .get(`/api/orders/${orderId}`)
         .set('Content-Type', 'application/json')
         .then((res) => {
 
@@ -114,7 +114,7 @@ describe('This test is used to see if integration of route, controller and model
         }
 
         await chai.request(app)
-        .patch(`/orders/${this.test.order._id}`)
+        .patch(`/api/orders/${this.test.order._id}`)
         .set('Content-Type', 'application/json')
         .send({
             items: item2Add
@@ -151,11 +151,10 @@ describe('This test is used to see if integration of route, controller and model
         await ordersModel.addOrder(customerOrder)
 
         await chai.request(app)
-        .get(`/orders`)
+        .get(`/api/orders`)
         .set('Content-Type', 'application/json')
-        .set('authorization', this.test.token)
+        .set('authorization', this.test.token.token)
         .then((res) => {
-            console.log(res.body)
             expect(res.body.length).to.equal(1)
             expect(res.body[0].value).to.equal(1000)
         })
@@ -166,7 +165,7 @@ describe('This test is used to see if integration of route, controller and model
         let orderId = this.test.order._id
 
         await chai.request(app)
-        .delete(`/orders/${orderId}`)
+        .delete(`/api/orders/${orderId}`)
         .set('Content-Type', 'application/json')
         .then(async (res) => {
 

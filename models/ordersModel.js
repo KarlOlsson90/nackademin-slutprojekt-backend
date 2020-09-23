@@ -37,7 +37,6 @@ module.exports = {
     },
     findAllOrders:  (id) => {
         
-        console.log(id)
         return new Promise(async(resolve, reject) => {
             try {
                 var orders
