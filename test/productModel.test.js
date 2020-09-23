@@ -4,13 +4,17 @@ const { expect } = require("chai");
 const Database = require("../database/mongodb");
 const Product = require("../models/productModels");
 
-describe("Product Model", () => {
-  before(async () => {
+describe("Unit Testing - Product Model", () => {
+  before("Connect to database before running the test", async () => {
     await Database.connect();
   });
- 
-  beforeEach(async () => {
+
+  beforeEach("Clear database before running each test", async () => {
     await Product.deleteAllProducts();
+  });
+
+  after("Disconnect from database after running the test", async () => {
+    await Database.disconnect();
   });
 
   it("should create a product", async () => {
