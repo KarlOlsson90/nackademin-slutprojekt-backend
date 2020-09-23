@@ -48,9 +48,21 @@ async function loginUserModel(body){
     const user = await usersDB.findOne({email: body.email});
     if (user){
         if (comparePass(body, user)) {
-
-            const token = jwt.sign({email: body.email, role: user.role, userId: user._id}, process.env.SECRET, {expiresIn: 10000000,})
-
+            console.log(user)
+            const token = jwt.sign({
+                token: "TJOSSAN",
+                user: {
+                  email: user.email,
+                  name: user.name,
+                  role: user.role,
+                  adress: {
+                    street: user.adress.street,
+                    zip: user.adress.zip,
+                    city: user.adress.city
+                  }
+                }
+              }, process.env.SECRET, {expiresIn: 10000000,})
+            
             return token
         }
     }

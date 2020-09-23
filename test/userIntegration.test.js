@@ -105,10 +105,18 @@ describe('User resource', async function () {
             creation of user below)
         ------------------------------------------------------*/
         const model = require('../models/usersModel');
-        const creationForm = {email: "testUsern", password: "testPasset"}
+        const creationForm = {
+            email: "testmail@mail.se",
+            password: "123",
+            name: "Karl",
+            adress: {
+                street: "adressgatan 5",
+                zip: "123 45",
+                city: "Stockholm"}
+            }
         const createdUser = await model.createUserModel(creationForm)
 
-        const loginForm = {email: "testUsern", password: "testPasset"}
+        const loginForm = {email: "testmail@mail.se", password: "123"}
 
         await chai.request(app)
             .post(`/api/auth`)
@@ -117,13 +125,10 @@ describe('User resource', async function () {
             .then((res) => {
 
                 expect(res.status).to.equal(200)
-
                 var decodedToken = decode(res.body)
-
-                expect(decodedToken['email']).to.equal('testUsern')
-                expect(decodedToken['role']).to.equal('user')
-                expect(decodedToken['userId']).to.equal(createdUser._id.toString())
-                expect(decodedToken['password']).to.not.exist
+                expect(decodedToken.user.email).to.equal('testmail@mail.se')
+                expect(decodedToken.user.role).to.equal('user')
+                expect(decodedToken.user.password).to.not.exist
                 })
 
     });
