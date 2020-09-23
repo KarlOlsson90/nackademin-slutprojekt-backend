@@ -16,21 +16,21 @@ switch(process.env.ENV){
     break;
 }
 async function connect(){
-    let uri = await mongoDatabase.getUri()
     
-    await mongoose
-    .connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-      useCreateIndex: true,
-    })
-    .then(() => {
-      
-    })
-    .catch((error) => {
-      console.error(error.reason);
-    });
+    let uri = await mongoDatabase.getUri()
+    try {
+        var connection = await mongoose.connect(uri, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useFindAndModify: false,
+            useCreateIndex: true
+        })
+        if(connection){
+            return {success: "Connected to database"}
+        }
+    } catch {
+        return {success: "Connection to database failed"}
+    }
 
 }
 
