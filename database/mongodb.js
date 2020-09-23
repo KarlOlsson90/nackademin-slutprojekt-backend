@@ -26,7 +26,7 @@ async function connect(){
       useCreateIndex: true,
     })
     .then(() => {
-      console.log(`Connected to database!`);
+      
     })
     .catch((error) => {
       console.error(error.reason);

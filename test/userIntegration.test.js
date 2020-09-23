@@ -24,7 +24,7 @@ describe('User resource', async function () {
 
     it('Get all users through request', async function (){
         await chai.request(app)
-            .get('/users')
+            .get('/api/users')
             .then((res) => {
                 expect(res).to.have.status(200)
                 })
@@ -35,7 +35,7 @@ describe('User resource', async function () {
         const userId = this.testUser1._id
 
         await chai.request(app)
-            .get(`/users/${userId}`)
+            .get(`/api/users/${userId}`)
             .then((res) => {
                 expect(res).to.have.status(200)
                 })
@@ -47,7 +47,7 @@ describe('User resource', async function () {
         const body = {email: 'newEmail'}
 
         await chai.request(app)
-            .patch(`/users/${userId}`)
+            .patch(`/api/users/${userId}`)
             .set('Content-Type', 'application/json')
             .send(body)
             .then((res) => {
@@ -63,7 +63,7 @@ describe('User resource', async function () {
         const userId = this.testUser1._id
 
         await chai.request(app)
-            .delete(`/users/${userId}`)
+            .delete(`/api/users/${userId}`)
             .then((res) => {
                 expect(res).to.have.status(201)
                 })
@@ -75,9 +75,19 @@ describe('User resource', async function () {
     it('User creation through request', async function (){
 
         var body = {email: "testUser", password: "testPass"}
-        
+        var body = {
+            email: "testmail@mail.se",
+            password: "123",
+            name: "Karl",
+            adress: {
+                street: "adressgatan 5",
+                zip: "123 45",
+                city: "Stockholm"
+            },
+            orderHistory: []
+        }
         await chai.request(app)
-            .post(`/users`)
+            .post(`/api/register`)
             .set('Content-Type', 'application/json')
             .send(body)
             .then((res) => {
@@ -86,7 +96,7 @@ describe('User resource', async function () {
 
     });
 
-    it('User login should return token', async function (){
+    it('User login should return token and specific userData', async function (){
 
         /*------------------------------------------------------
             To use hashing the user needs to created through
@@ -95,25 +105,32 @@ describe('User resource', async function () {
             creation of user below)
         ------------------------------------------------------*/
         const model = require('../models/usersModel');
-        const creationForm = {email: "testUsern", password: "testPasset"}
+        const creationForm = {
+            email: "testmail@mail.se",
+            password: "123",
+            name: "Karl",
+            adress: {
+                street: "adressgatan 5",
+                zip: "123 45",
+                city: "Stockholm"}
+            }
         const createdUser = await model.createUserModel(creationForm)
 
-        const loginForm = {email: "testUsern", password: "testPasset"}
+        const loginForm = {email: "testmail@mail.se", password: "123"}
 
         await chai.request(app)
-            .post(`/users/login`)
+            .post(`/api/auth`)
             .set('Content-Type', 'application/json')
             .send(loginForm)
             .then((res) => {
 
                 expect(res.status).to.equal(200)
-
-                var decodedToken = decode(res.body)
-                
-                expect(decodedToken['email']).to.equal('testUsern')
-                expect(decodedToken['role']).to.equal('user')
-                expect(decodedToken['userId']).to.equal(createdUser._id.toString())
-                expect(decodedToken['password']).to.not.exist
+                expect(res.body).to.haveOwnProperty("token")
+                expect(res.body).to.haveOwnProperty("user")
+                var decodedToken = decode(res.body.token)
+                //expect(decodedToken.userId.tostring()).to.equal({_id: createdUser._id})
+                expect(decodedToken.userRole).to.equal('user')
+                expect(decodedToken.password).to.not.exist
                 })
 
     });

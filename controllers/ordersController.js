@@ -43,10 +43,12 @@ module.exports = {
         }
     },
     findAllOrders: async (req, res) => {
-        console.log(req.user)
+        
         try {
             var orders
-            if (req.user.role == 'user') {
+
+            if (req.user.userRole == 'user') {
+
                 orders = await ordersModel.findAllOrders(req.user.userId)
             } else if (req.user.role == 'admin') {
                 orders = await ordersModel.findAllOrders('admin')

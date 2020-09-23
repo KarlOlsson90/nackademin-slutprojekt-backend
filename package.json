@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "cross-env ENV=test mocha",
-    "start": "node start.js"
+    "start": "cross-env ENV=dev node start.js"
   },
   "repository": {
     "type": "git",

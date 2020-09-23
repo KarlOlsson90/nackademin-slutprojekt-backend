@@ -41,8 +41,7 @@ async function deleteUserController(req, res){
 }
 async function createUserController(req, res){
     try {
-        const body = {email: req.body.email, password: req.body.password}
-        var result = await model.createUserModel(body)
+        var result = await model.createUserModel(req.body)
         return res.status(201).json(result);
     } catch(error) {
         return res.status(400).json(error);
