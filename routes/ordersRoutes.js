@@ -1,14 +1,16 @@
 const router = require('express').Router()
 const ordersController = require('../controllers/ordersController')
+const auth = require('../middlewares/authorization')
 
-router.get('/:orderId', ordersController.findOrder)
+router
+    .route('/:orderId')
+        .get(ordersController.findOrder)
+        .patch(ordersController.updateOrder)
+        .delete(ordersController.deleteOrder)
 
-router.post('/', ordersController.addOrder)
-
-router.patch('/:orderId', ordersController.updateOrder)
-
-router.delete('/:orderId', ordersController.deleteOrder)
-
-router.get('/', ordersController.findAllOrders)
+router
+    .route('/')
+        .get(auth.user, ordersController.findAllOrders)
+        .post(ordersController.addOrder)
 
 module.exports = router

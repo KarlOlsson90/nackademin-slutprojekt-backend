@@ -35,11 +35,17 @@ module.exports = {
             }
         }) 
     },
-    findAllOrders:  () => {
+    findAllOrders:  (id) => {
         
+        console.log(id)
         return new Promise(async(resolve, reject) => {
             try {
-                const orders = await ordersModel.find()
+                var orders
+                if (id == 'admin') {
+                    orders = await ordersModel.find()
+                } else {
+                    orders = await ordersModel.find({customerId: id})
+                }
                 
                 resolve(orders)
             } catch (error) {
