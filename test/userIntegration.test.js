@@ -75,9 +75,19 @@ describe('User resource', async function () {
     it('User creation through request', async function (){
 
         var body = {email: "testUser", password: "testPass"}
-        
+        var body = {
+            email: "testmail@mail.se",
+            password: "123",
+            name: "Karl",
+            adress: {
+                street: "adressgatan 5",
+                zip: "123 45",
+                city: "Stockholm"
+            },
+            orderHistory: []
+        }
         await chai.request(app)
-            .post(`/users`)
+            .post(`/api/register`)
             .set('Content-Type', 'application/json')
             .send(body)
             .then((res) => {
@@ -101,7 +111,7 @@ describe('User resource', async function () {
         const loginForm = {email: "testUsern", password: "testPasset"}
 
         await chai.request(app)
-            .post(`/users/login`)
+            .post(`/api/auth`)
             .set('Content-Type', 'application/json')
             .send(loginForm)
             .then((res) => {
