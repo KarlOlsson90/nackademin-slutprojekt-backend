@@ -2,12 +2,24 @@ const ordersModel = require('../models/ordersModel')
 
 module.exports = {
     addOrder: async (req, res) => {
-        var order = {
-            customerId: req.body.customerId,
-            status: 'inProcess',
-            items: req.body.items,
-            value: 0
+
+        var order
+        if(req.user) {
+            order = {
+                customerId: req.user._id,
+                status: 'inProcess',
+                items: req.body.items,
+                value: 0
+            }
+        } else {
+            order = {
+                customerId: req.body.customerId,
+                status: 'inProcess',
+                items: req.body.items,
+                value: 0
+            }
         }
+        
 
         for(const item in order.items) {
             order.value += order.items[item].price
@@ -31,9 +43,15 @@ module.exports = {
         }
     },
     findAllOrders: async (req, res) => {
-        
+        console.log(req.user)
         try {
-            const orders = await ordersModel.findAllOrders()
+            var orders
+            if (req.user.role == 'user') {
+                orders = await ordersModel.findAllOrders(req.user.userId)
+            } else if (req.user.role == 'admin') {
+                orders = await ordersModel.findAllOrders('admin')
+            }
+            
             res.json(orders)
         } catch (error) {
             res.json(error)
