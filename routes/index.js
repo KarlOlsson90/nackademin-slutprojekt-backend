@@ -1,6 +1,7 @@
+const router = require("express").Router();
+const productRoutes = require("./productRoutes");
 
-const router = require('express').Router()
-
+router.use("/products", productRoutes);
 
 const ordersRoute = require('./ordersRoutes')
 router.use('/api/orders', ordersRoute)
@@ -12,3 +13,4 @@ const loginRegisterRoute = require('./loginRegisterRoutes')
 router.use('/api/', loginRegisterRoute)
 
 module.exports = router
+

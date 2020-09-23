@@ -4,8 +4,10 @@
   "description": "## Arbetssätt Git Flow Agilt och Trello",
   "main": "index.js",
   "scripts": {
+
     "test": "cross-env ENV=test mocha --recursive --timeout 10000",
     "start": "cross-env ENV=dev node start.js"
+
   },
   "repository": {
     "type": "git",
