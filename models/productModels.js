@@ -17,7 +17,7 @@ module.exports = Product;
 
 module.exports = {
   createProduct: async (product) => {
-    return await Product.create(product);
+    return await (Product.create(product));
   },
   getAllProducts: async () => {
     return await Product.find({});
@@ -28,7 +28,7 @@ module.exports = {
   updateProduct: async (id, product) => {
     return await Product.findOneAndUpdate(
       { _id: id },
-      { $set: product },
+       product,
       { new: true }
     );
   },

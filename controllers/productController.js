@@ -3,6 +3,7 @@ const Product = require("../models/productModels");
 module.exports = {
   create: async (req, res) => {
     try {
+      console.log(req.body)
       const product = await Product.createProduct(req.body);
       res.status(201).json(product);
     } catch (error) {
@@ -26,8 +27,9 @@ module.exports = {
     }
   },
   update: async (req, res) => {
+  
     try {
-      const product = await Product.updateProduct(req.params.id, req.body);
+      const product = await Product.updateProduct(req.params.id, req.body.newProduct);
       res.status(200).json(product);
     } catch (error) {
       res.status(400).json(error.message);

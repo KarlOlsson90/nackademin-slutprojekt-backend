@@ -16,7 +16,7 @@ describe("Integration Testing - Product Model", () => {
   beforeEach("Clear database before running each test", async () => {
     await Product.deleteAllProducts();
 
-    const arrangedProducts = [
+    const arrangedProduct1 = 
       {
         title: "String 1",
         price: 1,
@@ -24,17 +24,18 @@ describe("Integration Testing - Product Model", () => {
         longDesc: "String 1",
         imgFile: "String 1",
       },
+      arrangedProduct2 = 
       {
         title: "String 2",
         price: 1,
         shortDesc: "String 2",
         longDesc: "String 2",
         imgFile: "String 2",
-      },
-    ];
+      };
 
-    const products = await Product.createProduct(arrangedProducts);
-    this.products = products;
+    const product1 = await Product.createProduct(arrangedProduct1);
+    const product2 = await Product.createProduct(arrangedProduct2);
+    this.products = [product1, product2];
   });
 
   after("Disconnect from database after running the test", async () => {
@@ -58,35 +59,16 @@ describe("Integration Testing - Product Model", () => {
       .set("Content-type", "application/json")
       .send(product)
       .then((res) => {
-
+       
         // Assert
+
         expect(res).to.have.status(201);
-        res.body.should.be.a("object");
+        expect(res.body).to.be.a("object");
+        expect(res.body.price).to.equal(1010);
       });
   });
 
   it("should get all products", async () => {
-    // Arrange
-    const arrangedProducts = [
-      {
-        _id: "5f686467fab56c53dcacfb25",
-        title: "String 1",
-        price: 1,
-        shortDesc: "String 1",
-        longDesc: "String 1",
-        imgFile: "String 1",
-      },
-      {
-        _id: "5f68648c49227a2510a68eb2",
-        title: "String 2",
-        price: 1,
-        shortDesc: "String 2",
-        longDesc: "String 2",
-        imgFile: "String 2",
-      },
-    ];
-
-    await Product.createProduct(arrangedProducts);
 
     // Act
     await chai
@@ -97,55 +79,63 @@ describe("Integration Testing - Product Model", () => {
         // Assert
         expect(res).to.have.status(200);
         expect(res).to.be.json;
+        expect(res.body[0].price).to.equal(1)
+        expect(res.body.length).to.equal(2)
       });
   });
 
   it("should get a product", async () => {
-    // Arrange
-    const arrangedProduct = {
-      _id: "5f68648c49227a2510a68eb2",
-      title: "String",
-      price: 1010,
-      shortDesc: "String",
-      longDesc: "String",
-      imgFile: "String",
-    };
-
-    await Product.createProduct(arrangedProduct);
 
     // Act
     await chai
       .request(app)
-      .get(`/products/${arrangedProduct._id}`)
+      .get(`/products/${this.products[0]._id}`)
       .then((res) => {
 
         // Assert
         expect(res).to.have.status(200);
         expect(res).to.be.json;
+        expect(res.body.price).to.equal(1)
       });
   });
 
-  it("should get a product", async () => {
-    // Arrange
-    const arrangedProduct = {
-      _id: "5f68648c49227a2510a68eb2",
-      title: "String",
-      price: 1010,
-      shortDesc: "String",
-      longDesc: "String",
-      imgFile: "String",
-    };
+  it("should delete a product", async () => {
 
     // Act
     await chai
       .request(app)
-      .get(`/products/${arrangedProduct._id}`)
-      .then((res) => {
+      .delete(`/products/${this.products[0]._id}`)
+      .then( async (res) => {
+
+        const product = await Product.getProduct(this.products[0]._id);
 
         // Assert
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
+        expect(product).to.equal(null)
       });
   });
 
+  it("should update a product", async () => {
+    let newProduct = {
+      title: "String 1",
+      price: 10,
+      shortDesc: "String 1",
+      longDesc: "String 1",
+      imgFile: "String 1",
+    }
+    // Act
+    await chai
+      .request(app)
+      .patch(`/products/${this.products[0]._id}`)
+      .send({
+        newProduct
+      })
+      .then( async (res) => {
+        
+        const product = await Product.getProduct(this.products[0]._id);
+
+        expect(res).to.have.status(200);
+        expect(product.price).to.equal(10)
+      });
+  });
 });
