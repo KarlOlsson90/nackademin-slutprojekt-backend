@@ -1,7 +1,7 @@
 const router = require("express").Router();
-const productRoutes = require("./productRoutes");
 
-router.use("/products", productRoutes);
+const productRoutes = require('./productRoutes');
+router.use('/api/products', productRoutes);
 
 const ordersRoute = require('./ordersRoutes')
 router.use('/api/orders', ordersRoute)
