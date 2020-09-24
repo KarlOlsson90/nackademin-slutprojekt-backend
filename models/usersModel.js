@@ -84,7 +84,6 @@ function comparePass(body, user){
 }
 
 
-
 module.exports = {
     createUserModel,
     getAllUsersModel,

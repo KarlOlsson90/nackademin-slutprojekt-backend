@@ -9,7 +9,9 @@
     "mongodbMemoryServer": {"version": "4.4.1"}
   },
   "scripts": {
-    "test": "cross-env ENV=test mocha --recursive --timeout 10000",
+
+    "test": "cross-env ENV=test mocha --recursive --timeout 50000",
+
     "start": "cross-env ENV=dev node start.js"
   },
   "repository": {
