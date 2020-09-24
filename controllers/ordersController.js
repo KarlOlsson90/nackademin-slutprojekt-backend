@@ -1,4 +1,5 @@
 const ordersModel = require('../models/ordersModel')
+const productsModel = require('../models/productModels')
 
 module.exports = {
     addOrder: async (req, res) => {
@@ -19,11 +20,17 @@ module.exports = {
                 value: 0
             }
         }
-        
 
+        var newItems = []
+        
         for(const item in order.items) {
-            order.value += order.items[item].price
+            const product = await productsModel.getProduct(order.items[item])
+            order.value += product.price
+            newItems.push(product)
         }
+
+        order.items = newItems
+        console.log(order.items)
         try {
             const addedOrder = await ordersModel.addOrder(order)
            
