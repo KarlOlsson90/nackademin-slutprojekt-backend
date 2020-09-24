@@ -60,22 +60,12 @@ describe('This test is used to see if integration of route, controller and model
 
     it('should add an order', async function () {
         const items = [
-            {
-                _id: '39y7gbbZk1u4ABnv',
-                title: 'Gretas Fury',
-                price: 999,
-                shortDesc: 'Unisex',
-                longDesc: 'Skate ipsum dolor sit amet...',
-                imgFile: 'skateboard-greta.png'
-            },
-            {
-                _id: '327gbbZk1u4ABnv',
-                title: 'Gretas chewing gum',
-                price: 1,
-                shortDesc: 'Unisex',
-                longDesc: 'Skate ipsum dolor sit amet...',
-                imgFile: 'skateboard-greta.png'
-            } 
+        
+           '5f6c6cdc2b4fa109b83c46ed'
+        ,
+        
+           '5f6c6cdc2b4fa109b83c46ec'
+         
         ]
         chai.request(app)
         .post(`/api/orders`)
@@ -87,7 +77,7 @@ describe('This test is used to see if integration of route, controller and model
         .then((res) => {
             
             expect(res.body.customerId).to.equal('Guest12345')
-            expect(res.body.value).to.equal(1000)
+            expect(res.body.value).to.equal(1598)
         })
     })
 
