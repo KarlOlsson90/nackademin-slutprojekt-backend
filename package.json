@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "## Arbetssätt Git Flow Agilt och Trello",
   "main": "index.js",
+  "directories": {
+    "test": "test"
+  }, "config": {
+    "mongodbMemoryServer": {"version": "4.4.1"}
+  },
   "scripts": {
     "test": "cross-env ENV=test mocha --recursive --timeout 10000",
     "start": "cross-env ENV=dev node start.js"
