@@ -41,6 +41,7 @@ module.exports = {
         return new Promise(async(resolve, reject) => {
             try {
                 var orders
+                
                 if (id == 'admin') {
                     orders = await ordersModel.find()
                 } else {
