@@ -10,6 +10,7 @@ const usersDB = mongoose.model("users")
 const ordersModel = require('../models/ordersModel')
 const usersModel = require('../models/usersModel')
 const productsModel = require('../models/productModels')
+const decode = require('jwt-decode')
 
 describe('This test is used to see if integration of route, controller and model is correct', () => {
     beforeEach(async function () {
@@ -64,6 +65,10 @@ describe('This test is used to see if integration of route, controller and model
         
         this.currentTest.token = await usersModel.loginUserModel({email: '123', password: '123'})
 
+        const admin = await usersDB.findByIdAndUpdate(this.currentTest.user._id, {role: 'admin'}, {new: true})
+        
+        this.currentTest.admin = await usersModel.loginUserModel({email: '123', password: '123'})
+        
     })
 
     it('should add an order', async function () {
@@ -87,6 +92,35 @@ describe('This test is used to see if integration of route, controller and model
         })
         .then((res) => {
             expect(res.body.customerId).to.equal('Guest123123123123')
+            expect(res.body.value).to.equal(999)
+        })
+    })
+
+    it('should add an order as an user', async function () {
+        const products = await productsModel.getAllProducts()
+        
+        const items = [
+            products[0]._id
+        ]
+
+        await chai.request(app)
+        .post(`/api/orders`)
+        .set('Content-Type', 'application/json')
+        .set('authorization', this.test.token.token)
+        .send({
+            customer: {
+                name: '123',
+                street: '123',
+                zip: '123',
+                city: '123'
+            },
+            items: items,
+        })
+        .then((res) => {
+            const user = decode(this.test.token.token)
+
+            expect(res.body.customerId).to.equal(user.userId)
+            expect(res.body.customerId).to.equal(this.test.user._id.toString())
             expect(res.body.value).to.equal(999)
         })
     })
@@ -157,6 +191,53 @@ describe('This test is used to see if integration of route, controller and model
         .then((res) => {
             expect(res.body.length).to.equal(1)
             expect(res.body[0].value).to.equal(1000)
+        })
+
+    })
+
+    it('should read all orders as an admin', async function () {
+
+        const customerId = this.test.user._id
+        const items = [
+            {
+                _id: '32y7gbbZk1u4ABnv',
+                title: 'Gretas Fury 2',
+                price: 1000,
+                shortDesc: 'Unisex',
+                longDesc: 'Skate ipsum dolor sit amet...',
+                imgFile: 'skateboard-greta.png'
+            }
+        ]
+        var value = 0
+        for(const item in items) {
+            value += items[item].price
+        }
+        const customerOrder1 = {
+            customerId: customerId,
+            status: 'inProcess',
+            items: items,
+            value: value
+        }
+        await ordersModel.addOrder(customerOrder1)
+
+        const customerOrder2 = {
+            customerId: customerId,
+            status: 'inProcess',
+            items: items,
+            value: value
+        }
+        await ordersModel.addOrder(customerOrder2)
+        
+        await chai.request(app)
+        .get(`/api/orders`)
+        .set('Content-Type', 'application/json')
+        .set('authorization', this.test.admin.token)
+        .then((res) => {
+            const admin = decode(this.test.admin.token)
+
+            expect(admin.userRole).to.equal('admin')
+            expect(res.body.length).to.equal(3)
+            expect(res.body[1].value).to.equal(1000)
         })
 
     })

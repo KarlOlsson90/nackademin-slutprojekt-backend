@@ -67,7 +67,7 @@ module.exports = {
             if (user.userRole == 'user') {
 
                 orders = await ordersModel.findAllOrders(user.userId)
-            } else if (user.role == 'admin') {
+            } else if (user.userRole == 'admin') {
                 orders = await ordersModel.findAllOrders('admin')
             }
             
