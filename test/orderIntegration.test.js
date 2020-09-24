@@ -9,6 +9,7 @@ const mongoose = require('mongoose')
 const usersDB = mongoose.model("users")
 const ordersModel = require('../models/ordersModel')
 const usersModel = require('../models/usersModel')
+const productsModel = require('../models/productModels')
 
 describe('This test is used to see if integration of route, controller and model is correct', () => {
     beforeEach(async function () {
@@ -37,7 +38,14 @@ describe('This test is used to see if integration of route, controller and model
             value: value
         }
         const order = await ordersModel.addOrder(customerOrder)
+        await productsModel.createProduct({
 
+            title: 'Gretas Fury',
+            price: 999,
+            shortDesc: 'Unisex',
+            longDesc: 'Skate ipsum dolor sit amet...',
+            imgFile: 'skateboard-greta.png'
+        })
         this.currentTest.order = order
 
         const user = {
@@ -59,35 +67,27 @@ describe('This test is used to see if integration of route, controller and model
     })
 
     it('should add an order', async function () {
+        const products = await productsModel.getAllProducts()
+        
         const items = [
-            {
-                _id: '39y7gbbZk1u4ABnv',
-                title: 'Gretas Fury',
-                price: 999,
-                shortDesc: 'Unisex',
-                longDesc: 'Skate ipsum dolor sit amet...',
-                imgFile: 'skateboard-greta.png'
-            },
-            {
-                _id: '327gbbZk1u4ABnv',
-                title: 'Gretas chewing gum',
-                price: 1,
-                shortDesc: 'Unisex',
-                longDesc: 'Skate ipsum dolor sit amet...',
-                imgFile: 'skateboard-greta.png'
-            } 
+            products[0]._id
         ]
-        chai.request(app)
+
+        await chai.request(app)
         .post(`/api/orders`)
         .set('Content-Type', 'application/json')
         .send({
-            customerId: 'Guest12345',
-            items: items
+            customer: {
+                name: '123',
+                street: '123',
+                zip: '123',
+                city: '123'
+            },
+            items: items,
         })
         .then((res) => {
-            
-            expect(res.body.customerId).to.equal('Guest12345')
-            expect(res.body.value).to.equal(1000)
+            expect(res.body.customerId).to.equal('Guest123123123123')
+            expect(res.body.value).to.equal(999)
         })
     })
 

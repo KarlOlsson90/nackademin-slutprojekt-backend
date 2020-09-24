@@ -1,29 +1,46 @@
 const ordersModel = require('../models/ordersModel')
+const productsModel = require('../models/productModels')
+const decode = require('jwt-decode')
 
 module.exports = {
     addOrder: async (req, res) => {
 
         var order
-        if(req.user) {
+        
+        if(req.headers.authorization) {
+            const user = decode(req.headers.authorization)
+
             order = {
-                customerId: req.user._id,
+                
+                customerId: user.userId,
                 status: 'inProcess',
                 items: req.body.items,
                 value: 0
             }
         } else {
+            
+            const id = 'Guest'+req.body.customer.name + req.body.customer.street + req.body.customer.zip + req.body.customer.city
+    
             order = {
-                customerId: req.body.customerId,
+                customerId: id,
                 status: 'inProcess',
                 items: req.body.items,
                 value: 0
             }
         }
-        
 
+        var newItems = []
+        
         for(const item in order.items) {
-            order.value += order.items[item].price
+            
+            const product = await productsModel.getProduct(order.items[item])
+            
+            order.value += product.price
+            newItems.push(product)
         }
+
+        order.items = newItems
+        
         try {
             const addedOrder = await ordersModel.addOrder(order)
            
@@ -43,14 +60,14 @@ module.exports = {
         }
     },
     findAllOrders: async (req, res) => {
-        
+        const user = decode(req.headers.authorization)
         try {
             var orders
+            
+            if (user.userRole == 'user') {
 
-            if (req.user.userRole == 'user') {
-
-                orders = await ordersModel.findAllOrders(req.user.userId)
-            } else if (req.user.role == 'admin') {
+                orders = await ordersModel.findAllOrders(user.userId)
+            } else if (user.role == 'admin') {
                 orders = await ordersModel.findAllOrders('admin')
             }
             
