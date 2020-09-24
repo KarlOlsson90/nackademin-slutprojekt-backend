@@ -32,7 +32,9 @@ module.exports = {
         var newItems = []
         
         for(const item in order.items) {
+            
             const product = await productsModel.getProduct(order.items[item])
+            
             order.value += product.price
             newItems.push(product)
         }
@@ -61,7 +63,7 @@ module.exports = {
         const user = decode(req.headers.authorization)
         try {
             var orders
-            console.log(req.user)
+            
             if (user.userRole == 'user') {
 
                 orders = await ordersModel.findAllOrders(user.userId)
