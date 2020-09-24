@@ -9,7 +9,7 @@ module.exports = {
         
         if(req.headers.authorization) {
             const user = decode(req.headers.authorization)
-            console.log(user)
+
             order = {
                 
                 customerId: user.userId,
@@ -20,7 +20,7 @@ module.exports = {
         } else {
             
             const id = 'Guest'+req.body.customer.name + req.body.customer.street + req.body.customer.zip + req.body.customer.city
-            console.log(id)
+    
             order = {
                 customerId: id,
                 status: 'inProcess',
@@ -58,14 +58,14 @@ module.exports = {
         }
     },
     findAllOrders: async (req, res) => {
-        
+        const user = decode(req.headers.authorization)
         try {
             var orders
             console.log(req.user)
-            if (req.user.userRole == 'user') {
+            if (user.userRole == 'user') {
 
-                orders = await ordersModel.findAllOrders(req.user.userId)
-            } else if (req.user.role == 'admin') {
+                orders = await ordersModel.findAllOrders(user.userId)
+            } else if (user.role == 'admin') {
                 orders = await ordersModel.findAllOrders('admin')
             }
             
