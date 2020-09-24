@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 
+
 const order = new mongoose.Schema({
     customerId: String,
     status: String,
@@ -45,7 +46,7 @@ module.exports = {
                 } else {
                     orders = await ordersModel.find({customerId: id})
                 }
-                
+                console.log(id)
                 resolve(orders)
             } catch (error) {
                 reject(error)

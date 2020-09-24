@@ -1,20 +1,28 @@
 const ordersModel = require('../models/ordersModel')
 const productsModel = require('../models/productModels')
+const decode = require('jwt-decode')
 
 module.exports = {
     addOrder: async (req, res) => {
 
         var order
-        if(req.user) {
+        
+        if(req.headers.authorization) {
+            const user = decode(req.headers.authorization)
+            console.log(user)
             order = {
-                customerId: req.user._id,
+                
+                customerId: user.userId,
                 status: 'inProcess',
                 items: req.body.items,
                 value: 0
             }
         } else {
+            
+            const id = 'Guest'+req.body.customer.name + req.body.customer.street + req.body.customer.zip + req.body.customer.city
+            console.log(id)
             order = {
-                customerId: req.body.customerId,
+                customerId: id,
                 status: 'inProcess',
                 items: req.body.items,
                 value: 0
@@ -30,7 +38,7 @@ module.exports = {
         }
 
         order.items = newItems
-        console.log(order.items)
+        
         try {
             const addedOrder = await ordersModel.addOrder(order)
            
@@ -53,7 +61,7 @@ module.exports = {
         
         try {
             var orders
-
+            console.log(req.user)
             if (req.user.userRole == 'user') {
 
                 orders = await ordersModel.findAllOrders(req.user.userId)
