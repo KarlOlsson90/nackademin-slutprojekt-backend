@@ -55,7 +55,7 @@ describe("Integration Testing - Product Model", () => {
     // Act
     await chai
       .request(app)
-      .post("/products")
+      .post("/api/products")
       .set("Content-type", "application/json")
       .send(product)
       .then((res) => {
@@ -73,7 +73,7 @@ describe("Integration Testing - Product Model", () => {
     // Act
     await chai
       .request(app)
-      .get("/products")
+      .get("/api/products")
       .then((res) => {
 
         // Assert
@@ -89,7 +89,7 @@ describe("Integration Testing - Product Model", () => {
     // Act
     await chai
       .request(app)
-      .get(`/products/${this.products[0]._id}`)
+      .get(`/api/products/${this.products[0]._id}`)
       .then((res) => {
 
         // Assert
@@ -104,7 +104,7 @@ describe("Integration Testing - Product Model", () => {
     // Act
     await chai
       .request(app)
-      .delete(`/products/${this.products[0]._id}`)
+      .delete(`/api/products/${this.products[0]._id}`)
       .then( async (res) => {
 
         const product = await Product.getProduct(this.products[0]._id);
@@ -126,7 +126,7 @@ describe("Integration Testing - Product Model", () => {
     // Act
     await chai
       .request(app)
-      .patch(`/products/${this.products[0]._id}`)
+      .patch(`/api/products/${this.products[0]._id}`)
       .send({
         newProduct
       })

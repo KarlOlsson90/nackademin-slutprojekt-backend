@@ -35,13 +35,11 @@ async function connect(){
 }
 
 async function disconnect() {
-  await mongoose.disconnect().then(() => {
-    console.log(`Disconnected from database!`);
-  });
+  await mongoose.disconnect()
 
-  // if(process.env.ENV == 'test' || process.env.ENV == 'dev'){
-  // await mongoDatabase.stop()
-  // }
+  if(process.env.ENV == 'test' || process.env.ENV == 'dev'){
+  await mongoDatabase.stop()
+  }
 }
 
 module.exports = {
